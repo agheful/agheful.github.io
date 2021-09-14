@@ -1,0 +1,85 @@
+<meta charset="UTF-8">
+<html>
+<head>
+<style>
+div {text-align: center;}
+p {text-align: center;}
+li {text-align: center;}
+button {text-align: center; margin: 5px}
+</style>
+	<!--https://barrycarlyon.github.io/twitch_misc/authentication/implicit_auth-->
+    <title>Twitch Implicit Auth for TTS</title>
+    <link rel="stylesheet" href="/twitch_misc/style.css" />
+</head>
+<body>
+	<p>Fetches channel ID and authorization for reading bit rewards and subs from your channel</p>
+    <p>DO NOT SHOW ON STREAM!</p>
+    <ul>
+		<div>
+        <button>
+            <a href="" id="authorize_public">Authorize test to get email</a>
+        </button>
+		</div>
+		<div>
+        <button>
+            <a href="" id="authorize_email">Authorize and get token</a>
+        </button>
+		</div>
+    </ul>
+		<div>
+		<textarea id="data_area" class="data"></textarea>
+		</div>
+		<div>
+		<button onclick="clickFunction()" id="copy_data">Copy text</button> 
+		</div>
+	<p>You can Disconnect the "LIDL Custom TTS" Application on your <a href="https://www.twitch.tv/settings/connections">Connections</a> page if you leaked data or want to revoke access.</p>
+
+    <script type="text/javascript">
+        var client_id = 'h21g1tg3jgvgr8z8aapdgyp5lnuwrg';
+        var redirect = 'https://agheful.github.io/twitch_implicit_auth_test/';
+
+        document.getElementById('authorize_public').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=' + encodeURIComponent('user:read:email'));
+        document.getElementById('authorize_email').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=' + encodeURIComponent('channel:read:redemptions channel:read:subscriptions'));
+
+        if (document.location.hash && document.location.hash != '') {
+            var parsedHash = new URLSearchParams(window.location.hash.substr(1));
+            if (parsedHash.get('access_token')) {
+                var access_token = parsedHash.get('access_token');
+                // call API
+                fetch(
+                    'https://api.twitch.tv/helix/users',
+                    {
+                        "headers": {
+                            "Client-ID": client_id,
+                            "Authorization": "Bearer " + access_token
+                        }
+                    }
+                )
+                .then(resp => resp.json())
+                .then(resp => {
+					var data = resp.data[0]
+					user_id = data.id
+					const dataString = '{\"user_id\":"' + user_id + '",\"oauth_token\":"' + access_token + '",\"client_id\":"' + client_id + '"}'
+					document.getElementById('data_area').textContent = dataString;
+					console.log(data)
+                })
+                .catch(err => {
+                    console.log(err);
+                    document.getElementById('data_area').textContent = 'Something went wrong';
+                });
+            }
+        } else if (document.location.search && document.location.search != '') {
+            var parsedParams = new URLSearchParams(window.location.search);
+            if (parsedParams.get('error_description')) {
+                document.getElementById('data_area').textContent = parsedParams.get('error') + ' - ' + parsedParams.get('error_description');
+            }
+        }
+		
+		function clickFunction() {
+			document.getElementById('data_area').select()
+			document.execCommand('copy')
+		}
+            
+    </script>
+</body>
+</html>
