@@ -14,6 +14,7 @@ button {text-align: center; margin: 5px}
 <body>
 	<p>Get the auth token for reading channel point redemptions and subs from your channel</p>
     <p>DO NOT SHOW ON STREAM!</p>
+	<!--
     <ul>
 		<div>
         <button>
@@ -26,6 +27,7 @@ button {text-align: center; margin: 5px}
         </button>
 		</div>
     </ul>
+	-->
 		<div>
 		<textarea id="data_area" class="data"></textarea>
 		</div>
@@ -38,7 +40,7 @@ button {text-align: center; margin: 5px}
         var client_id = 'h21g1tg3jgvgr8z8aapdgyp5lnuwrg';
         var redirect = 'https://agheful.github.io/twitch_implicit_auth_test/';
 
-        document.getElementById('authorize_public').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=' + encodeURIComponent('channel:moderate'));
+        <!--document.getElementById('authorize_public').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=' + encodeURIComponent('channel:moderate'));-->
         document.getElementById('authorize_email').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=' + encodeURIComponent('channel:read:redemptions channel:read:subscriptions'));
 
         if (document.location.hash && document.location.hash != '') {
